@@ -18,25 +18,39 @@ const Auth = () => {
             toast.error("Email is required.");
             return false;
         }
-        if(!password.length){
-            toast.error("Password is required")
+        if (!password.length) {
+            toast.error("Password is required.");
             return false;
         }
-        if(password !== confirmPassword){
-            toast.error("Password and confirm password should be same.")
+        if (password !== confirmPassword) {
+            toast.error("Password and confirm password should be the same.");
             return false;
         }
         return true;
     };
 
-    const handleLogin = async () => { };
-
     const handleSignup = async () => {
         if (validateSignup()) {
-            const response = await apiClient.post(SIGNUP_ROUTE,{email,password});
-            console.log({ response })
+            try {
+                console.log("Signup Data:", { email, password });
+                const response = await apiClient.post(
+                    SIGNUP_ROUTE,
+                    { email, password },
+                    { withCredentials: true } // Ensure cookies are sent with the request
+                );
+                console.log("Signup Response:", response.data);
+                toast.success("Signup successful!");
+
+                // Handle additional actions based on response data if needed
+            } catch (error) {
+                console.error("Signup Error:", error.response ? error.response.data : error.message);
+                const errorMessage = error.response?.data?.message || "Signup failed. Please try again.";
+                toast.error(errorMessage);
+            }
         }
     };
+
+    const handleLogin = async () => { /* handle login logic here */ };
 
     return (
         <div className="h-[100vh] w-[100vw] flex items-center justify-center">
